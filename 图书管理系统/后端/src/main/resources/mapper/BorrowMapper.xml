@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.example.busonline.mapper.BorrowMapper">
+
+    <insert id="addBorrow" parameterType="Borrow">
+        insert into borrow (sid,bid,btime,endtime,money,isback,backtime)
+        values (#{sid},#{bid},#{btime},#{endtime},#{money}, #{isback}, #{backtime})
+    </insert>
+
+    <delete id="deleteById" parameterType="Long">
+        delete from borrow where id = #{id}
+    </delete>
+
+    <update id="updateBorrow" parameterType="Borrow">
+        UPDATE borrow set sid = #{sid}, bid = #{bid},
+                        btime = #{btime}, endtime = #{endtime}, money = #{money} where id = #{id}
+    </update>
+
+    <select id="findAll" resultType="Borrow">
+        select b.name, b.kind, b.publish, b.author, b.price, b.num, b.nnum,b.description,
+        bi.bid, bi.sid,bi.btime,bi.endtime, bi.money, bi.id, bi.isback, bi.backtime
+        from book b
+        INNER JOIN
+        borrow bi
+        on b.id = bi.bid
+        where 1 = 1
+        <if test="name!=null and name!= ''">
+            and b.name like concat(concat('%',#{name}),'%')
+        </if>
+        LIMIT #{start},#{end}
+    </select>
+
+    <select id="findAllTotal" resultType="Integer">
+        select count(b.id) from book b
+        INNER JOIN
+        borrow bi
+        on b.id = bi.bid
+        where 1 = 1
+        <if test="name!=null and name!= ''">
+            and b.name like concat(concat('%',#{name}),'%')
+        </if>
+    </select>
+
+    <select id="getById" parameterType="Long" resultType="Borrow">
+        SELECT * from borrow where id = #{id}
+    </select>
+
+    <select id="fuzzyFind" resultType="Borrow">
+        select b.name, b.kind, b.publish, b.author, b.price, b.num, b.nnum,b.description,
+        bi.bid, bi.sid,bi.btime,bi.endtime, bi.money, bi.id, bi.isback, bi.backtime,
+        u.username, u.gender
+        FROM ( book b INNER JOIN borrow bi ON b.id = bi.bid )
+        INNER JOIN
+        user u
+        on u.id = bi.sid
+        where 1 = 1
+        <if test="name!=null and name!= ''">
+            and b.name like concat(concat('%',#{name}),'%')
+        </if>
+        <if test="isback!=null">
+            and bi.isback = #{isback}
+        </if>
+        <if test="author!=null and author!= ''">
+            and b.author like concat(concat('%',#{author}),'%')
+        </if>
+        <if test="sid!=null and sid!= ''">
+            and bi.sid = #{sid}
+        </if>
+        LIMIT #{start},#{end}
+    </select>
+
+    <select id="fuzzyFindTotal" resultType="Integer">
+        select count(b.id)
+        FROM ( book b INNER JOIN borrow bi ON b.id = bi.bid )
+        INNER JOIN
+        user u
+        on u.id = bi.sid
+        where 1 = 1
+        <if test="name!=null and name!= ''">
+            and b.name like concat(concat('%',#{name}),'%')
+        </if>
+        <if test="isback!=null">
+            and bi.isback = #{isback}
+        </if>
+        <if test="author!=null and author!= ''">
+            and b.author like concat(concat('%',#{author}),'%')
+        </if>
+        <if test="sid!=null and sid!= ''">
+            and bi.sid = #{sid}
+        </if>
+    </select>
+
+    <update id="backBookBorrow" >
+        update borrow set backtime = #{backtime}, isback = #{isback}
+            where id = #{id}
+    </update>
+</mapper>

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.example.busonline.mapper.UserMapper">
+
+    <!-- 查询所有用户信息 -->
+    <select id="findAll" resultType="User">
+        select * from user where 1=1
+         <if test="username!=null and username!= ''">
+             and username like concat(concat('%',#{username}),'%')
+         </if>
+         <if test="gender!=null and gender!=''">
+             and gender = #{gender}
+         </if>
+        limit #{start},#{end}
+    </select>
+
+    <select id="findTotal" resultType="Integer">
+        select count(*) FROM user where 1=1
+        <if test="username!=null and username!= ''">
+            and username like concat(concat('%',#{username}),'%')
+        </if>
+        <if test="gender!=null and gender!=''">
+            and gender = #{gender}
+        </if>
+    </select>
+
+    <select id="login" resultType="User">
+        SELECT * FROM user where id = #{id} and password = #{password}
+    </select>
+    <insert id="addUser" parameterType="User">
+        INSERT INTO user (username,password,gender,phone,address,description) values (#{username},#{password},#{gender},#{phone},#{address},#{description})
+    </insert>
+
+    <delete id="deleteById" parameterType="Integer">
+        DELETE FROM user where id = #{id}
+    </delete>
+
+    <update id="updateUser" parameterType="User">
+        UPDATE user set username = #{username}, gender = #{gender},
+            phone = #{phone}, address = #{address}, description = #{description} where id = #{id}
+    </update>
+
+    <!-- 通过id查询用户 -->
+    <select id="getById" resultType="User" parameterType="Integer">
+        select * from user where id = #{id}
+    </select>
+
+    <update id="changePwd" parameterType="User">
+        UPDATE user set password = #{password} where id = #{id}
+    </update>
+</mapper>

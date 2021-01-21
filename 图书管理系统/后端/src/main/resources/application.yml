@@ -1,0 +1,18 @@
+server:
+  port: 8888
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/library?serverTimezone=GMT%2B8
+    username: root
+    password: root
+mybatis:
+  #mapper 存放位置
+  mapper-locations: classpath:mapper/*.xml
+  type-aliases-package: com.example.busonline.entity
+  configuration:
+    map-underscore-to-camel-case: true
+
+logging:
+  level:
+    com.example.busonline.mapper: debug

@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.example.busonline.mapper.BookMapper">
+    <insert id="addBook" parameterType="Book">
+        insert into book (name,kind,publish,author,price,num,nnum,description)
+        values (#{name},#{kind},#{publish},#{author},#{price},#{num},#{nnum},#{description})
+    </insert>
+
+    <delete id="deleteById" parameterType="Long">
+        delete from book where id = #{id}
+    </delete>
+
+    <update id="updateBook" parameterType="Book">
+        UPDATE book set name = #{name}, kind = #{kind},
+                        publish = #{publish}, author = #{author}, price = #{price},
+                        num = #{num}, nnum = #{nnum},description = #{description} where id = #{id}
+    </update>
+
+    <select id="findAll" resultType="Book">
+        select * from book where 1=1
+        <if test="name!=null and name!= ''">
+            and name like concat(concat('%',#{name}),'%')
+        </if>
+        limit #{start},#{end}
+    </select>
+
+    <!-- 通过书名查询路线 -->
+    <select id="findByName" resultType="Book">
+        select * from book where 1=1
+        <if test="name!=null and name!=''">
+            and name like concat(concat('%',#{name}),'%')
+        </if>
+        limit #{start},#{end}
+    </select>
+
+    <select id="findById" resultType="Book">
+        select * from book where id = #{id}
+    </select>
+
+    <select id="findTotal" resultType="Integer">
+        select count(*) FROM book where 1=1
+        <if test="name!=null and name!= ''">
+            and name like concat(concat('%',#{name}),'%')
+        </if>
+    </select>
+
+    <select id="fuzzyFind" resultType="Book">
+        select * from book where 1=1
+        <if test="name!=null and name!= ''">
+            and name like concat(concat('%',#{name}),'%')
+        </if>
+        <if test="kind!=null and kind!= ''">
+            and kind like concat(concat('%',#{kind}),'%')
+        </if>
+        <if test="author!=null and author!= ''">
+            and author like concat(concat('%',#{author}),'%')
+        </if>
+    </select>
+
+    <select id="fuzzyFindTotal" resultType="integer">
+        select count(*) FROM book where 1=1
+        <if test="name!=null and name!= ''">
+            and name like concat(concat('%',#{name}),'%')
+        </if>
+        <if test="kind!=null and kind!= ''">
+            and kind like concat(concat('%',#{kind}),'%')
+        </if>
+        <if test="author!=null and author!= ''">
+            and author like concat(concat('%',#{author}),'%')
+        </if>
+    </select>
+
+    <select id="getById" parameterType="Long" resultType="Book">
+        SELECT * from book where id = #{id} and nnum > 1
+    </select>
+
+    <update id="muliOne">
+        UPDATE book set nnum = nnum -1 where id = #{id}
+    </update>
+
+    <update id="addBorrowOne" parameterType="Long">
+        update book set nnum = nnum +1 where id = #{id}
+    </update>
+</mapper>

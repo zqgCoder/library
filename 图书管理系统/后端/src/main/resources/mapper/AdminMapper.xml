@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.example.busonline.mapper.AdminMapper">
+    <select id="findAll" resultType="Admin">
+        SELECT * FROM admin
+    </select>
+    <select id="findByNameAndPwd" resultType="Admin">
+        SELECT * FROM admin where id = #{id} and password = #{password}
+    </select>
+
+    <!-- 通过id查询用户 -->
+    <select id="getById" resultType="Admin" parameterType="Integer">
+        select * from admin where id = #{id}
+    </select>
+
+    <update id="changePwd" parameterType="Admin">
+        UPDATE admin set password = #{password} where id = #{id}
+    </update>
+</mapper>
